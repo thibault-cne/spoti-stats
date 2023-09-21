@@ -2,12 +2,34 @@
 	import { Motion } from 'svelte-motion';
 
 	import { onMount } from 'svelte';
-	import { user } from '$lib/store';
+	import { user, top_artists, top_tracks } from '$lib/store';
+	import type { SpotifyResponse, TrackObject, ArtistObject } from '$lib/types';
 
 	var user_data: any = {};
+	var top_data: {
+		artists: null | SpotifyResponse<ArtistObject>;
+		tracks: null | SpotifyResponse<TrackObject>;
+	} = {
+		artists: null,
+		tracks: null
+	};
+	var top_artists_data: any = undefined;
+	var top_tracks_data: any = undefined;
+	var time_range = {
+		tracks: 'medium_term',
+		artists: 'medium_term'
+	};
 
 	user.subscribe((value) => {
 		user_data = value;
+	});
+
+	top_artists.subscribe((value) => {
+		top_data.artists = value;
+	});
+
+	top_tracks.subscribe((value) => {
+		top_data.tracks = value;
 	});
 
 	onMount(() => {
@@ -23,6 +45,9 @@
 			}).then((res) => {
 				res.json().then((data) => {
 					user.set(data);
+
+					fetchTopArtist();
+					fetchTopTracks();
 				});
 			});
 		}
@@ -42,6 +67,37 @@
 		}
 		return hashParams;
 	}
+
+	/**
+	 * Fetch top artists
+	 */
+	function fetchTopArtist() {
+		fetch(`https://api.spotify.com/v1/me/top/artists?limit=10&time_range=${time_range.artists}`, {
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}).then((res) => {
+			res.json().then((data) => {
+				top_artists.set(data);
+			});
+		});
+	}
+
+	/**
+	 * Fetch top tracks
+	 */
+	function fetchTopTracks() {
+		fetch(`https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=${time_range.tracks}`, {
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}).then((res) => {
+			res.json().then((data) => {
+				top_tracks.set(data);
+			});
+		});
+	}
+
 	const variants = {
 		visible: { opacity: 1, x: 0 },
 		hidden: { opacity: 0, x: -500 }
@@ -51,17 +107,16 @@
 
 	$: v = ['hidden', 'visible'][i];
 	$: token = '';
-	// Check is user has a token
-	$: logged = user_data.display_name !== undefined;
+	$: init = user_data.display_name !== undefined;
 </script>
 
-{#if logged}
+{#if init}
 	<section
 		id="home"
-		class="w-full bg-brand bg-center bg-no-repeat bg-[length:105%_105%] flex py-20 justify-center items-center transition-all duration-75 sticky top-0"
+		class="h-screen w-full bg-brand bg-center bg-no-repeat bg-[length:105%_105%] flex py-28 justify-center items-center transition-all duration-75 sticky top-0"
 	>
 		<div class="space-y-10 text-center">
-			<h2 class="font-bold">Hi, {user_data.display_name} !</h2>
+			<h2 class="font-bold text-2xl md:text-4xl">Hi, {user_data.display_name} !</h2>
 			<!-- Animated Logo -->
 			{#if user_data.images[1]}
 				<figure class="flex items-center justify-center">
@@ -78,7 +133,75 @@
 					</Motion>
 				</figure>
 			{/if}
-			<div>Are you ready to discover insights of your spotify account ?</div>
+			<div class="text-lg md:text-2xl">
+				Are you ready to discover insights of your spotify account ?
+			</div>
 		</div>
 	</section>
+
+	{#if top_data.artists}
+		<section
+			id="top-artists"
+			class="w-full flex items-center bg-neutrals-900 py-28 relative z-10 xl:min-h-screen flex-col bg-slate-900"
+			aria-label="top-artists"
+		>
+			<h2 class="text-2xl font-bold mb-16">Top 10 Artists</h2>
+			<div class="w-full flex justify-end">
+				<select
+					bind:value={time_range.artists}
+					on:change={fetchTopArtist}
+					name="time_range_artists"
+					id="time_range_artists"
+					class="select max-w-xs mb-10 mr-5"
+				>
+					<option>medium_term</option>
+					<option>short_term</option>
+					<option>long_term</option>
+				</select>
+			</div>
+			<div class="flex flex-wrap justify-center gap-20">
+				{#each top_data.artists.items as artist}
+					<div class="flex flex-col items-center space-y-2">
+						<img src={artist.images[0].url} alt={artist.name} class="rounded-full w-36 h-36" />
+						<div class="text-center">
+							<h3 class="font-bold text-lg">{artist.name}</h3>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</section>
+	{/if}
+
+	{#if top_data.tracks}
+		<section
+			id="top-tracks"
+			class="w-full flex items-center bg-neutrals-900 py-28 relative z-10 xl:min-h-screen flex-col bg-slate-900"
+			aria-label="top-tracks"
+		>
+			<h2 class="text-2xl font-bold mb-16">Top 10 Tracks</h2>
+			<div class="w-full flex justify-end">
+				<select
+					bind:value={time_range.tracks}
+					on:change={fetchTopTracks}
+					name="time_range_tracks"
+					id="time_range_tracks"
+					class="select max-w-xs mb-10 mr-5"
+				>
+					<option>medium_term</option>
+					<option>short_term</option>
+					<option>long_term</option>
+				</select>
+			</div>
+			<div class="flex flex-wrap justify-center gap-20">
+				{#each top_data.tracks.items as track}
+					<div class="flex flex-col items-center space-y-2">
+						<img src={track.album.images[0].url} alt={track.name} class="rounded-full w-36 h-36" />
+						<div class="text-center">
+							<h3 class="font-bold text-lg max-w-[120px]">{track.name}</h3>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</section>
+	{/if}
 {/if}

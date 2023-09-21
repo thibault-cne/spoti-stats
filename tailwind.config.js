@@ -16,6 +16,7 @@ export default {
 				// Register each theme within this array:
 				preset: ['skeleton']
 			}
-		})
+		}),
+		require('daisyui')
 	]
 };

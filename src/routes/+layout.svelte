@@ -38,7 +38,7 @@
 						aria-label="logout">logout</button
 					>
 				{:else}
-					<a href={url}>login</a>
+					<a href={url} aria-label="logout">login</a>
 				{/if}
 			</svelte:fragment>
 		</AppBar>
