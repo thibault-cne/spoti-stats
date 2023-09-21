@@ -13,11 +13,13 @@
 		artists: null,
 		tracks: null
 	};
-	var top_artists_data: any = undefined;
-	var top_tracks_data: any = undefined;
 	var time_range = {
 		tracks: 'medium_term',
 		artists: 'medium_term'
+	};
+	var limits = {
+		tracks: 10,
+		artists: 10
 	};
 
 	user.subscribe((value) => {
@@ -72,11 +74,14 @@
 	 * Fetch top artists
 	 */
 	function fetchTopArtist() {
-		fetch(`https://api.spotify.com/v1/me/top/artists?limit=10&time_range=${time_range.artists}`, {
-			headers: {
-				Authorization: 'Bearer ' + token
+		fetch(
+			`https://api.spotify.com/v1/me/top/artists?limit=${limits.artists}&time_range=${time_range.artists}`,
+			{
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
 			}
-		}).then((res) => {
+		).then((res) => {
 			res.json().then((data) => {
 				top_artists.set(data);
 			});
@@ -87,11 +92,14 @@
 	 * Fetch top tracks
 	 */
 	function fetchTopTracks() {
-		fetch(`https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=${time_range.tracks}`, {
-			headers: {
-				Authorization: 'Bearer ' + token
+		fetch(
+			`https://api.spotify.com/v1/me/top/tracks?time_range=${time_range.tracks}&limit=${limits.tracks}`,
+			{
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
 			}
-		}).then((res) => {
+		).then((res) => {
 			res.json().then((data) => {
 				top_tracks.set(data);
 			});
@@ -147,17 +155,27 @@
 		>
 			<h2 class="text-2xl font-bold mb-16">Top 10 Artists</h2>
 			<div class="w-full flex justify-end">
-				<select
-					bind:value={time_range.artists}
-					on:change={fetchTopArtist}
-					name="time_range_artists"
-					id="time_range_artists"
-					class="select max-w-xs mb-10 mr-5"
-				>
-					<option>medium_term</option>
-					<option>short_term</option>
-					<option>long_term</option>
-				</select>
+				<div class="flex flex-col mb-10 mr-5 gap-4 max-w-xs">
+					<select
+						bind:value={time_range.artists}
+						on:change={fetchTopArtist}
+						name="time_range_tracks"
+						id="time_range_tracks"
+						class="select"
+					>
+						<option>medium_term</option>
+						<option>short_term</option>
+						<option>long_term</option>
+					</select>
+					<input
+						type="range"
+						min="0"
+						max="50"
+						bind:value={limits.artists}
+						on:mouseup={fetchTopArtist}
+						class="range"
+					/>
+				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-20">
 				{#each top_data.artists.items as artist}
@@ -180,17 +198,27 @@
 		>
 			<h2 class="text-2xl font-bold mb-16">Top 10 Tracks</h2>
 			<div class="w-full flex justify-end">
-				<select
-					bind:value={time_range.tracks}
-					on:change={fetchTopTracks}
-					name="time_range_tracks"
-					id="time_range_tracks"
-					class="select max-w-xs mb-10 mr-5"
-				>
-					<option>medium_term</option>
-					<option>short_term</option>
-					<option>long_term</option>
-				</select>
+				<div class="flex flex-col mb-10 mr-5 gap-4 max-w-xs">
+					<select
+						bind:value={time_range.tracks}
+						on:change={fetchTopTracks}
+						name="time_range_tracks"
+						id="time_range_tracks"
+						class="select"
+					>
+						<option>medium_term</option>
+						<option>short_term</option>
+						<option>long_term</option>
+					</select>
+					<input
+						type="range"
+						min="0"
+						max="50"
+						bind:value={limits.tracks}
+						on:mouseup={fetchTopTracks}
+						class="range"
+					/>
+				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-20">
 				{#each top_data.tracks.items as track}
