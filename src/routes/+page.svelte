@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	const scope = 'user-top-read';
+	const scope = 'user-top-read user-read-private';
 	const url =
 		'https://accounts.spotify.com/authorize' +
 		'?response_type=token' +
@@ -11,10 +11,26 @@
 		encodeURIComponent(scope);
 	'&redirect_uri=' + encodeURIComponent('http://localhost:5173');
 
+	var user: any = {};
+
 	onMount(() => {
 		const params = getHashParams();
 
 		token = params.access_token;
+
+		if (token !== '') {
+			logged = true;
+
+			fetch('https://api.spotify.com/v1/me', {
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
+			}).then((res) => {
+				res.json().then((data) => {
+					user = data;
+				});
+			});
+		}
 	});
 
 	/**
@@ -33,6 +49,11 @@
 	}
 
 	$: token = '';
+	$: logged = false;
 </script>
 
-<button on:click={() => (window.location.href = url)}> Login </button>
+{#if logged}
+	<h2>{user.display_name}</h2>
+{:else}
+	<button on:click={() => (window.location.href = url)}> Login </button>
+{/if}
