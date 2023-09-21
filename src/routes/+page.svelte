@@ -220,15 +220,32 @@
 					/>
 				</div>
 			</div>
-			<div class="flex flex-wrap justify-center gap-20">
-				{#each top_data.tracks.items as track}
-					<div class="flex flex-col items-center space-y-2">
-						<img src={track.album.images[0].url} alt={track.name} class="rounded-full w-36 h-36" />
-						<div class="text-center">
-							<h3 class="font-bold text-lg max-w-[120px]">{track.name}</h3>
-						</div>
-					</div>
-				{/each}
+			<div class="flex w-full justify-center">
+				<ul class="group/list w-4/5 flex flex-wrap justify-center gap-10">
+					{#each top_data.tracks.items as track}
+						<li class="mb-12 w-44">
+							<div
+								class="group relative pb-1 transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50"
+							>
+								<div
+									class="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"
+								/>
+								<div
+									class="w-full z-10 sm:order-2 sm:col-span-6 flex flex-col items-center justify-center"
+								>
+									<img
+										src={track.album.images[0].url}
+										alt={track.name}
+										class="rounded-full w-36 h-36 mb-6"
+									/>
+									<div class="text-center">
+										<h3 class="font-bold text-lg">{track.name}</h3>
+									</div>
+								</div>
+							</div>
+						</li>
+					{/each}
+				</ul>
 			</div>
 		</section>
 	{/if}
