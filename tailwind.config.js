@@ -1,4 +1,5 @@
 import { skeleton } from '@skeletonlabs/tw-plugin';
+import { customTheme } from './theme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -14,7 +15,8 @@ export default {
 		skeleton({
 			themes: {
 				// Register each theme within this array:
-				preset: ['skeleton']
+				preset: [{ name: 'skeleton', enhancements: true }],
+				custom: [customTheme]
 			}
 		}),
 		require('daisyui')

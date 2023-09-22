@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { user, top_artists, top_tracks } from '$lib/store';
 	import type { SpotifyResponse, TrackObject, ArtistObject } from '$lib/types';
+	import Track from '$lib/track.svelte';
 
 	var user_data: any = {};
 	var top_data: {
@@ -121,7 +122,7 @@
 {#if init}
 	<section
 		id="home"
-		class="h-screen w-full bg-brand bg-center bg-no-repeat bg-[length:105%_105%] flex py-28 justify-center items-center transition-all duration-75 sticky top-0"
+		class="h-screen flex-col w-full bg-brand bg-center bg-no-repeat bg-[length:105%_105%] flex py-28 justify-center items-center transition-all duration-75 sticky top-0"
 	>
 		<div class="space-y-10 text-center">
 			<h2 class="font-bold text-2xl md:text-4xl">Hi, {user_data.display_name} !</h2>
@@ -144,6 +145,27 @@
 			<div class="text-lg md:text-2xl">
 				Are you ready to discover insights of your spotify account ?
 			</div>
+		</div>
+		<div class="hidden md:flex justify-center space-x-2 mt-10 heartbeat">
+			<!-- Scroll buttons with arrows -->
+			<a href="#top-artists" class="btn btn-sm variant-ghost-surface bg-primary-500 h-12 w-12">
+				<div class="flex flex-col items-center">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-8 w-8"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="white"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M19 14l-7 7m0 0l-7-7m7 7V3"
+						/>
+					</svg>
+				</div>
+			</a>
 		</div>
 	</section>
 
@@ -177,15 +199,54 @@
 					/>
 				</div>
 			</div>
-			<div class="flex flex-wrap justify-center gap-20">
-				{#each top_data.artists.items as artist}
-					<div class="flex flex-col items-center space-y-2">
-						<img src={artist.images[0].url} alt={artist.name} class="rounded-full w-36 h-36" />
-						<div class="text-center">
-							<h3 class="font-bold text-lg">{artist.name}</h3>
-						</div>
-					</div>
-				{/each}
+			<div class="flex w-full justify-center">
+				<ul class="group/list w-4/5 flex flex-wrap justify-center gap-10">
+					{#each top_data.artists.items as artist}
+						<li class="mb-12 w-44">
+							<div
+								class="group relative pb-1 transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50"
+							>
+								<div
+									class="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"
+								/>
+								<div
+									class="w-full z-10 sm:order-2 sm:col-span-6 flex flex-col items-center justify-center"
+								>
+									<img src={artist.images[0].url} alt={artist.name} class="w-36 h-36 mb-6" />
+									<div class="text-center">
+										<h3>
+											<a
+												class="inline-flex items-baseline font-medium leading-tight text-[#1DB954] group/link text-base"
+												href={artist.external_urls.spotify}
+												target="_blank"
+												rel="noreferrer"
+												aria-label="Build a Spotify Connected App"
+											>
+												<span
+													class="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"
+												/>
+												<span class="inline-block">
+													{artist.name}<svg
+														xmlns="http://www.w3.org/2000/svg"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+														class="inline-block h-4 w-4 shrink-0 transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1 group-focus-visible/link:-translate-y-1 group-focus-visible/link:translate-x-1 motion-reduce:transition-none ml-1 translate-y-px"
+														aria-hidden="true"
+														><path
+															fill-rule="evenodd"
+															d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z"
+															clip-rule="evenodd"
+														/></svg
+													>
+												</span>
+											</a>
+										</h3>
+									</div>
+								</div>
+							</div>
+						</li>
+					{/each}
+				</ul>
 			</div>
 		</section>
 	{/if}
@@ -221,27 +282,16 @@
 				</div>
 			</div>
 			<div class="flex w-full justify-center">
-				<ul class="group/list w-4/5 flex flex-wrap justify-center gap-10">
+				<ul class="group/list w-4/5 grid grid-cols-2 justify-start gap-10">
 					{#each top_data.tracks.items as track}
-						<li class="mb-12 w-44">
+						<li>
 							<div
-								class="group relative pb-1 transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50"
+								class="group relative transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50"
 							>
 								<div
 									class="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"
 								/>
-								<div
-									class="w-full z-10 sm:order-2 sm:col-span-6 flex flex-col items-center justify-center"
-								>
-									<img
-										src={track.album.images[0].url}
-										alt={track.name}
-										class="rounded-full w-36 h-36 mb-6"
-									/>
-									<div class="text-center">
-										<h3 class="font-bold text-lg">{track.name}</h3>
-									</div>
-								</div>
+								<Track {track} />
 							</div>
 						</li>
 					{/each}
@@ -250,3 +300,78 @@
 		</section>
 	{/if}
 {/if}
+
+<style lang="postcss">
+	.heartbeat {
+		-webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+		animation: heartbeat 1.5s ease-in-out infinite both;
+	}
+	@-webkit-keyframes heartbeat {
+		from {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			-webkit-transform-origin: center center;
+			transform-origin: center center;
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+		10% {
+			-webkit-transform: scale(0.91);
+			transform: scale(0.91);
+			-webkit-animation-timing-function: ease-in;
+			animation-timing-function: ease-in;
+		}
+		17% {
+			-webkit-transform: scale(0.98);
+			transform: scale(0.98);
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+		33% {
+			-webkit-transform: scale(0.87);
+			transform: scale(0.87);
+			-webkit-animation-timing-function: ease-in;
+			animation-timing-function: ease-in;
+		}
+		45% {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+	}
+	@keyframes heartbeat {
+		from {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			-webkit-transform-origin: center center;
+			transform-origin: center center;
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+		10% {
+			-webkit-transform: scale(0.91);
+			transform: scale(0.91);
+			-webkit-animation-timing-function: ease-in;
+			animation-timing-function: ease-in;
+		}
+		17% {
+			-webkit-transform: scale(0.98);
+			transform: scale(0.98);
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+		33% {
+			-webkit-transform: scale(0.87);
+			transform: scale(0.87);
+			-webkit-animation-timing-function: ease-in;
+			animation-timing-function: ease-in;
+		}
+		45% {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			-webkit-animation-timing-function: ease-out;
+			animation-timing-function: ease-out;
+		}
+	}
+</style>

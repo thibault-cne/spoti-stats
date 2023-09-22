@@ -16,7 +16,7 @@ export type TrackObject = {
 	duration_ms: number;
 	explicit: boolean;
 	external_ids: object;
-	external_urls: object;
+	external_urls: ExternalUrls;
 	href: string;
 	id: string;
 	is_playable: boolean;
@@ -32,7 +32,7 @@ export type TrackObject = {
 };
 
 export type ArtistObject = {
-	external_urls: object;
+	external_urls: ExternalUrls;
 	followers: object;
 	genres: string[];
 	href: string;
@@ -64,4 +64,8 @@ type ImageObject = {
 	url: string;
 	height: number;
 	width: number;
+};
+
+type ExternalUrls = {
+	spotify: string;
 };

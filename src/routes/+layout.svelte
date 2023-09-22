@@ -27,7 +27,7 @@
 
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar>
+		<AppBar background="bg-primary-500 text-black">
 			<svelte:fragment slot="lead">Spoti-Stats</svelte:fragment>
 			<svelte:fragment slot="trail">
 				{#if logged}
