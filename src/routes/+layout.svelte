@@ -6,7 +6,7 @@
 
 	import { user } from '$lib/store';
 
-	const scope = 'user-top-read user-read-private';
+	const scope = 'user-top-read user-read-private user-library-read';
 	const url =
 		'https://accounts.spotify.com/authorize' +
 		'?response_type=token' +

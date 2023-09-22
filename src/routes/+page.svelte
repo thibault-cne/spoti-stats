@@ -282,16 +282,13 @@
 				</div>
 			</div>
 			<div class="flex w-full justify-center">
-				<ul class="group/list w-4/5 grid grid-cols-2 justify-start gap-10">
+				<ul class="group/list w-4/5 grid grid-cols-1 lg:grid-cols-2 justify-start gap-10">
 					{#each top_data.tracks.items as track}
 						<li>
 							<div
-								class="group relative transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50"
+								class="group relative transition-all flex lg:hover:!opacity-100 lg:group-hover/list:opacity-50 w-full"
 							>
-								<div
-									class="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"
-								/>
-								<Track {track} />
+								<Track {track} {token} />
 							</div>
 						</li>
 					{/each}
