@@ -175,7 +175,7 @@
 			class="w-full flex items-center bg-neutrals-900 py-28 relative z-10 xl:min-h-screen flex-col bg-slate-900"
 			aria-label="top-artists"
 		>
-			<h2 class="text-2xl font-bold mb-16">Top {limits.artists} Artists</h2>
+			<h2 class="text-2xl font-bold mb-16">Your top {limits.artists} Artists</h2>
 			<div class="w-full flex justify-end">
 				<div class="flex flex-col mb-10 mr-5 gap-4 max-w-xs">
 					<select
@@ -222,9 +222,6 @@
 												rel="noreferrer"
 												aria-label="Build a Spotify Connected App"
 											>
-												<span
-													class="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"
-												/>
 												<span class="inline-block">
 													{artist.name}<svg
 														xmlns="http://www.w3.org/2000/svg"
@@ -257,7 +254,7 @@
 			class="w-full flex items-center bg-neutrals-900 py-28 relative z-10 xl:min-h-screen flex-col bg-slate-900"
 			aria-label="top-tracks"
 		>
-			<h2 class="text-2xl font-bold mb-16">Top {limits.tracks} Tracks</h2>
+			<h2 class="text-2xl font-bold mb-16">Your top {limits.tracks} Tracks</h2>
 			<div class="w-full flex justify-end">
 				<div class="flex flex-col mb-10 mr-5 gap-4 max-w-xs">
 					<select
