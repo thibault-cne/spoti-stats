@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { current_track } from './store';
 	import type { TrackObject } from './types';
 
 	onMount(async () => {
@@ -11,6 +12,12 @@
 		});
 		const data = await res.json();
 		liked = data[0];
+
+		current_track.subscribe((track_id) => {
+			if (track_id != track.id) {
+				paused = true;
+			}
+		});
 	});
 
 	export let track: TrackObject;
@@ -61,13 +68,23 @@
 	<div class="flex flex-row h-full justify-end gap-10">
 		{#if track.preview_url}
 			<audio src={track.preview_url} preload="metadata" bind:paused />
-			<button on:click={() => (paused = !paused)}>
+			<button
+				class="text-[#535353] hover:text-white"
+				on:click={() => {
+					paused = !paused;
+					if (paused) {
+						current_track.set(null);
+					} else {
+						current_track.set(track.id);
+					}
+				}}
+			>
 				{#if !paused}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						height="40"
 						width="40"
-						fill="#535353"
+						fill="currentColor"
 						viewBox="0 0 512 512"
 						><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path
 							d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM224 192V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V192c0-17.7 14.3-32 32-32s32 14.3 32 32zm128 0V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V192c0-17.7 14.3-32 32-32s32 14.3 32 32z"
@@ -78,7 +95,7 @@
 						xmlns="http://www.w3.org/2000/svg"
 						height="40"
 						width="40"
-						fill="#535353"
+						fill="currentColor"
 						viewBox="0 0 512 512"
 						><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path
 							d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z"
